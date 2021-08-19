@@ -1,0 +1,25 @@
+{
+  "name": "docsifyboke",
+  "version": "1.0.0",
+  "description": "<!--  * @Author: your name  * @Date: 2021-08-18 17:40:45  * @LastEditTime: 2021-08-18 17:41:46  * @LastEditors: Please set LastEditors  * @Description: In User Settings Edit  * @FilePath: \\docsifyBoke\\README.md --> ## 简易生成Docsify博客",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kindring/docsifyBoke.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kindring/docsifyBoke/issues"
+  },
+  "homepage": "https://github.com/kindring/docsifyBoke#readme",
+  "dependencies": {
+    "docsify": "^4.12.1",
+    "koa": "^2.13.1",
+    "koa-router": "^10.0.0"
+  }
+}

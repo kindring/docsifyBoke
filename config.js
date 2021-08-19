@@ -1,7 +1,7 @@
 /*
- * @Author: your name
+ * @Author: kindring
  * @Date: 2021-08-17 09:35:08
- * @LastEditTime: 2021-08-18 17:15:27
+ * @LastEditTime: 2021-08-19 14:14:34
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \docsify\config.js
