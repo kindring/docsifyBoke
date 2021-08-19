@@ -1,7 +1,7 @@
 /*
  * @Author: kindring
  * @Date: 2021-08-17 09:36:03
- * @LastEditTime: 2021-08-18 17:16:40
+ * @LastEditTime: 2021-08-19 16:09:34
  * @LastEditors: Please set LastEditors
  * @Description: 自动加载侧边栏
  * @FilePath: \docsify\newSidebar.js
@@ -39,12 +39,14 @@ async function getTargetDocs(){
     let [writeError,isWriteOk] = await handel(writePromise(sidebarTarget,siderbarString))
     if(writeError){ return deadlyErrorHandel(writeError,'写入文件失败') }
     console.log('侧边栏写入成功');
-    let ReadmeFileExist = await fs.existsSync(config.docPath,'README.md');
-    if(ReadmeFileExist){
-        let ReadmeFileData = fs.readFileSync(path.join(config.docPath,'README.md'))
-        let [writeReadmeError] = await handel(writePromise(config.homeTarget,ReadmeFileData))
-        if(writeReadmeError){ return deadlyErrorHandel(writeError,'替换README文件失败') }
-         console.log('首页替换成功');
+    if(config.isLoadReadme){
+        let ReadmeFileExist = await fs.existsSync(config.docPath,'README.md');
+        if(ReadmeFileExist){
+            let ReadmeFileData = fs.readFileSync(path.join(config.docPath,'README.md'))
+            let [writeReadmeError] = await handel(writePromise(config.homeTarget,ReadmeFileData))
+            if(writeReadmeError){ return deadlyErrorHandel(writeError,'替换README文件失败') }
+             console.log('首页替换成功');
+        }
     }
 }
 getTargetDocs();
@@ -153,34 +155,28 @@ function loadFile(dirPath,nowPath = '',max_level =2,nowLevel = 0){
     if(nowLevel >= max_level){
         return dirsArray
     }
-    console.log(`max_level`)
-    console.log(max_level)
-    console.log(`max_level`)
-
     // 当前的路径
     let nowDirPath = path.join(dirPath,nowPath);
-    let dirs = fs.readdirSync(nowDirPath);
-    for(let i = 0;i<dirs.length;i++){
+    let dirs = fs.readdirSync(nowDirPath).forEach((file,i)=>{
         let _obj = {
             path: '',// 文件相对于文档路径下的
-            fileName: dirs[i],// 文件名
+            fileName: file,// 文件名
             isDirectory: false,// 是否为文件夹
             children: [],//子文件夹
         }
-        let filePath = path.join(nowPath,dirs[i]);
+        let filePath = path.join(nowPath,file);
         let absoluteFilePath = path.join(dirPath,filePath);
         if(fs.lstatSync(absoluteFilePath).isDirectory()){
             //是文件夹
             _obj.isDirectory = true;
-            // 通过递归继续查找子文件夹,防止无限递归目录
+            // 递归查找子文件夹
             _obj.children = loadFile(dirPath,filePath,max_level,nowLevel+1)
         }else{
 
         }
         _obj.path = filePath;
         dirsArray.push(_obj);
-    }
-
+    })
     return dirsArray;
 }
 
