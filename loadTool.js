@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-08-19 16:05:37
- * @LastEditTime: 2021-08-19 18:04:52
+ * @LastEditTime: 2021-08-20 10:02:57
  * @LastEditors: Please set LastEditors
  * @Description: 工具类
  * @FilePath: \docsifyBoke\until\index.js
@@ -79,7 +79,7 @@ function loadFile(dirPath,nowPath = '',max_level =2,nowLevel = 0){
         if (excludePaths.some((val)=>{return isExclude(item.path,val)}) ) return;
         // 判断是否为文件夹,然后判断是否为md文件
         if(item.isDirectory){
-            item.children = excludePath(item.children,docPath,excludePaths,passExt);
+            item.children = excludePath(item.children,docPath,excludePaths,passExts);
             resultsArr.push(item);
         }else{
             if( passExts.some(extName=> extName == getExtName(item.fileName)) )resultsArr.push(item);
@@ -148,10 +148,10 @@ function isExclude(filePath,item){
 
 // 自动加载js
 function autoLoad(targetPath,baseExportObj,maxlevel,excludePaths,passExts){
-    let files = loadFile(__dirname,'',maxlevel)
-    files = excludePath(files,__dirname,['index.js'],'js')
+    let files = loadFile(targetPath,'',maxlevel)
+    files = excludePath(files,targetPath,excludePaths,passExts)
     // console.log(files);
-    let exportObj = autoRequire(files,moduleExports,targetPath);
+    let exportObj = autoRequire(files,baseExportObj,targetPath);
     // console.log(obj);
     return exportObj;
 }
@@ -193,6 +193,14 @@ function autoRequire(fileArr,resultObj,targetPath){
     }
     return resultObj;
 }
-
+// autoLoad(__dirname,moduleExports,4,['index.js'],'js');
 // 自动加载模块导出
-module.exports = autoLoad(__dirname,moduleExports,4,['index.js'],'js');
+module.exports = {
+    autoLoad,
+    autoRequire,
+    loadFile,
+    excludePath,
+    isExclude,
+    getExtName,
+    excludeExtName,
+};
