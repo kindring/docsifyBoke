@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-08-19 16:05:37
- * @LastEditTime: 2021-08-20 10:02:57
+ * @LastEditTime: 2021-08-25 16:47:27
  * @LastEditors: Please set LastEditors
  * @Description: 工具类
  * @FilePath: \docsifyBoke\until\index.js
@@ -193,9 +193,32 @@ function autoRequire(fileArr,resultObj,targetPath){
     }
     return resultObj;
 }
+
+/**
+ * 获取配置文件
+ * @param {String,Url} configPath 配置文件路径
+ * @param {Number} time 延迟的毫秒数
+ * @returns Promise
+ */
+ function getConfig(configPath,time = 5){
+    return new Promise((resolve,reject)=>{
+        try {
+            //获取目录
+            let config = require(configPath);
+            setTimeout(()=>{
+                delete require.cache[require.resolve(configPath)]
+                resolve(config);
+            },time);
+        } catch (error) {
+            reject(error)
+        }
+        
+    })
+}
 // autoLoad(__dirname,moduleExports,4,['index.js'],'js');
 // 自动加载模块导出
 module.exports = {
+    handel,
     autoLoad,
     autoRequire,
     loadFile,
@@ -203,4 +226,5 @@ module.exports = {
     isExclude,
     getExtName,
     excludeExtName,
+    getConfig,
 };

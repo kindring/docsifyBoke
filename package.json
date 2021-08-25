@@ -19,7 +19,9 @@
   "homepage": "https://github.com/kindring/docsifyBoke#readme",
   "dependencies": {
     "docsify": "^4.12.1",
+    "docsify-cli": "^4.4.3",
     "koa": "^2.13.1",
+    "koa-body": "^4.2.0",
     "koa-router": "^10.0.0"
   }
 }
