@@ -1,0 +1,105 @@
+/*
+ * @Author: your name
+ * @Date: 2021-08-18 11:43:48
+ * @LastEditTime: 2021-08-18 15:10:06
+ * @LastEditors: Please set LastEditors
+ * @Description: 自定义侧边栏样式
+ * @FilePath: \docsify\css\customSidebar.css
+ */
+ :root {
+    --sidebar-bg-color: ;
+  }
+ .sidebar{
+     background-color: var(--sidebar-bg-color);
+ }
+ /* 收缩按钮 */
+ .sidebar-toggle{
+    /* background-color: transparent; */
+ }
+ .sidebar-nav{
+
+ }
+ .sidebar ul{
+     margin: 0;
+ }
+ .sidebar-nav > ul > *{
+     /* text-indent: 2em; */
+ }
+ .sidebar-nav .folder {
+     /* border-bottom: 1px solid black; */
+     /* background-color: orangeRed; */
+ }
+ .sidebar-nav .folder > ul{
+     /* border-top: 1px solid black; */
+ }
+ .sidebar-nav > ul >.open{
+    box-shadow: 0px 0px 5px black;
+}
+ .level-1 >strong,.level-1 >a{
+     display: inline-block;
+     font-size: 1.2em;
+     width: 100%;
+     height: 100%;
+     
+     padding-left: 15px;
+     /* background-color: #000; */
+ }
+ .level-1 .app-sub-sidebar > li{
+     width: 100%;
+     display: flex;
+    padding-left: 45px;
+ }
+ 
+ .level-1> ul >li>.app-sub-sidebar strong,.level-1> ul >li >.app-sub-sidebar a{
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    padding-left: 45px;
+ }
+ .level-1> ul >li >.app-sub-sidebar a{
+     padding-left: 0;
+ }
+
+ .level-1> ul> li> strong,.level-1> ul >li >a{
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    padding-left: 30px;
+ }
+ .level-1> ul >li >.section-link{
+     padding-left: 0;
+ }
+ .level-1 >strong:hover,.level-1 > a:hover{
+     color:orangered;
+     cursor: pointer;
+ }
+ .level-1 >ul{
+     background-color: #fefff3;
+ }
+ .level-1 {
+     transition: all 0.7s;
+ }
+ 
+
+ .level-2> ul> li> strong,.level-2> ul >li >a{
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    padding-left: 45px;
+ }
+ .level-1> ul >li>.app-sub-sidebar strong,.level-1> ul >li >.app-sub-sidebar a{
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    padding-left: 60px;
+ }
+ .level-1> ul >li >.app-sub-sidebar a{
+     padding-left: 0;
+ }
+ .level-2 .app-sub-sidebar > li{
+     padding-left: 60px;
+ }
+ .level-2> ul >li >.section-link{
+     padding-left: 0;
+ }
+ 
