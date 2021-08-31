@@ -1,8 +1,8 @@
 /*
- * @Author: your name
+ * @Author: kindring
  * @Date: 2021-08-19 16:05:37
- * @LastEditTime: 2021-08-25 16:47:27
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-08-31 16:38:38
+ * @LastEditors: kindring
  * @Description: 工具类
  * @FilePath: \docsifyBoke\until\index.js
  */
@@ -42,7 +42,7 @@ function loadFile(dirPath,nowPath = '',max_level =2,nowLevel = 0){
     }
     // 当前的路径
     let nowDirPath = path.join(dirPath,nowPath);
-    let dirs = fs.readdirSync(nowDirPath).forEach((file,i)=>{
+    fs.readdirSync(nowDirPath).forEach((file,i)=>{
         let _obj = {
             path: '',// 文件相对于文档路径下的
             fileName: file,// 文件名
@@ -71,7 +71,7 @@ function loadFile(dirPath,nowPath = '',max_level =2,nowLevel = 0){
  * @param {Array | String} passExt 通过的文件后缀
  * 
  */
- function excludePath(arr,docPath,excludePaths,passExts = 'md'){
+function excludePath(arr,docPath,excludePaths,passExts = 'md'){
     // 排除文件夹
     if(typeof passExts == 'string'){ passExts = [passExts] }
     let resultsArr = [];
@@ -119,7 +119,7 @@ function isExclude(filePath,item){
  * 获取文件后缀名
  * @param {String} fileName 文件名
  */
- function getExtName(fileName){
+function getExtName(fileName){
     return fileName.substr(fileName.lastIndexOf('.')+1);
 }
 /**
@@ -127,7 +127,7 @@ function isExclude(filePath,item){
  * @param {*} fileName 文件名
  * @returns 
  */
- function excludeExtName(fileName){
+function excludeExtName(fileName){
     return fileName.substr(0,fileName.lastIndexOf('.'));
 }
 
@@ -136,7 +136,7 @@ function isExclude(filePath,item){
  * @param {*} promise 
  * @returns Promise resolve[err,val]
  */
- function handel(promise){
+function handel(promise){
     return new Promise((resolve,reject)=>{
         promise.then((val)=>{
             resolve([null,val])
@@ -197,18 +197,15 @@ function autoRequire(fileArr,resultObj,targetPath){
 /**
  * 获取配置文件
  * @param {String,Url} configPath 配置文件路径
- * @param {Number} time 延迟的毫秒数
- * @returns Promise
+ * @return Promise
  */
- function getConfig(configPath,time = 5){
+function getConfig(configPath){
     return new Promise((resolve,reject)=>{
         try {
             //获取目录
             let config = require(configPath);
-            setTimeout(()=>{
-                delete require.cache[require.resolve(configPath)]
-                resolve(config);
-            },time);
+            delete require.cache[require.resolve(configPath)]
+            resolve(config);
         } catch (error) {
             reject(error)
         }
