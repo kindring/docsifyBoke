@@ -85,10 +85,7 @@ async function updateSideBar(){
 }
 
 
-// 获取博客的配置
-function bokeConfig(){
 
-}
 
 startServer();
 
