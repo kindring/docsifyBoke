@@ -1,0 +1,16 @@
+{
+    "docsifyPath": "/boke",
+    "repositoryName": "doc",
+    "cloneUrl": "",
+    "header": "master",
+    "excludeExtName": [
+        ".git",
+        "README.md"
+    ],
+    "homeTarget": "README.md",
+    "sidebarTarget": "\"./_sidebar.md\"",
+    "isCreateTmpReadme": false,
+    "tmpReadmeName": "M__README_MD.md",
+    "maxChildLevel": 4,
+    "plugin": []
+}
