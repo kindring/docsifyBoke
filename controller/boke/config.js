@@ -4,7 +4,7 @@
  * @Autor: kindring
  * @Date: 2021-08-31 17:52:23
  * @LastEditors: kindring
- * @LastEditTime: 2021-09-06 18:01:07
+ * @LastEditTime: 2021-09-08 14:33:12
  */
 
 const fs = require('fs')
@@ -31,7 +31,7 @@ class Config {
         header: 'master',
         excludeExtName: ['.git', 'README.md'],
         homeTarget: 'README.md', //首页文件位置,只基于doc目录下的文件来进行处理
-        sidebarTarget: '"./_sidebar.md"',
+        sidebarTarget: './_sidebar.md',
         isCreateTmpReadme: false,
         tmpReadmeName: 'M__README_MD.md',
         maxChildLevel: 4,
@@ -106,6 +106,7 @@ class Config {
 
             // 扩展一些常用的配置文件
             config.rootPath = path.join(__dirname, '../../' + config.docsifyPath)
+            config.docPath = path.join(config.rootPath, config.repositoryName)
             this.config = config
             this.onloaded()
             resolve();

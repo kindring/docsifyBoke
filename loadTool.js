@@ -1,7 +1,7 @@
 /*
  * @Author: kindring
  * @Date: 2021-08-19 16:05:37
- * @LastEditTime: 2021-08-31 16:38:38
+ * @LastEditTime: 2021-09-08 14:27:30
  * @LastEditors: kindring
  * @Description: 工具类
  * @FilePath: \docsifyBoke\until\index.js
@@ -35,27 +35,27 @@ const moduleExports = {
  * @param {number} nowLevel 当前目录层级
  * @return {Array}
  */
-function loadFile(dirPath,nowPath = '',max_level =2,nowLevel = 0){
+function loadFile(dirPath, nowPath = '', max_level = 2, nowLevel = 0) {
     let dirsArray = [];
-    if(nowLevel >= max_level){
+    if (nowLevel >= max_level) {
         return dirsArray
     }
     // 当前的路径
-    let nowDirPath = path.join(dirPath,nowPath);
-    fs.readdirSync(nowDirPath).forEach((file,i)=>{
+    let nowDirPath = path.join(dirPath, nowPath);
+    fs.readdirSync(nowDirPath).forEach((file, i) => {
         let _obj = {
-            path: '',// 文件相对于文档路径下的
-            fileName: file,// 文件名
-            isDirectory: false,// 是否为文件夹
-            children: [],//子文件夹
+            path: '', // 文件相对于文档路径下的
+            fileName: file, // 文件名
+            isDirectory: false, // 是否为文件夹
+            children: [], //子文件夹
         }
-        let filePath = path.join(nowPath,file);
-        let absoluteFilePath = path.join(dirPath,filePath);
-        if(fs.lstatSync(absoluteFilePath).isDirectory()){
+        let filePath = path.join(nowPath, file);
+        let absoluteFilePath = path.join(dirPath, filePath);
+        if (fs.lstatSync(absoluteFilePath).isDirectory()) {
             //是文件夹
             _obj.isDirectory = true;
             // 递归查找子文件夹
-            _obj.children = loadFile(dirPath,filePath,max_level,nowLevel+1)
+            _obj.children = loadFile(dirPath, filePath, max_level, nowLevel + 1)
         }
         _obj.path = filePath;
         dirsArray.push(_obj);
@@ -71,18 +71,20 @@ function loadFile(dirPath,nowPath = '',max_level =2,nowLevel = 0){
  * @param {Array | String} passExt 通过的文件后缀
  * 
  */
-function excludePath(arr,docPath,excludePaths,passExts = 'md'){
+function excludePath(arr, docPath, excludePaths = [], passExts = 'md') {
+    if (!passExts) { passExts = [] }
     // 排除文件夹
-    if(typeof passExts == 'string'){ passExts = [passExts] }
+    if (typeof passExts == 'string') { passExts = [passExts] }
+    // console.log(passExts)
     let resultsArr = [];
-    arr.forEach(item=>{
-        if (excludePaths.some((val)=>{return isExclude(item.path,val)}) ) return;
+    arr.forEach(item => {
+        if (excludePaths.some((val) => { return isExclude(item.path, val) })) return;
         // 判断是否为文件夹,然后判断是否为md文件
-        if(item.isDirectory){
-            item.children = excludePath(item.children,docPath,excludePaths,passExts);
+        if (item.isDirectory) {
+            item.children = excludePath(item.children, docPath, excludePaths, passExts);
             resultsArr.push(item);
-        }else{
-            if( passExts.some(extName=> extName == getExtName(item.fileName)) )resultsArr.push(item);
+        } else {
+            if (passExts.some(extName => extName == getExtName(item.fileName))) resultsArr.push(item);
         }
     })
     return resultsArr;
@@ -94,19 +96,19 @@ function excludePath(arr,docPath,excludePaths,passExts = 'md'){
  * @param {*} item 
  * @returns 
  */
-function isExclude(filePath,item){
+function isExclude(filePath, item) {
     filePath = path.join(filePath)
-    switch(typeof item){
+    switch (typeof item) {
         case 'string':
-            if(filePath == item){
+            if (filePath == item) {
                 return true;
             }
             break;
         case 'object':
-            if(item.include){
-                if(filePath.includes(item.path)){return true; }
-            }else {
-                if(filePath == item.path){return true; }
+            if (item.include) {
+                if (filePath.includes(item.path)) { return true; }
+            } else {
+                if (filePath == item.path) { return true; }
             }
             break;
         default:
@@ -119,16 +121,29 @@ function isExclude(filePath,item){
  * 获取文件后缀名
  * @param {String} fileName 文件名
  */
-function getExtName(fileName){
-    return fileName.substr(fileName.lastIndexOf('.')+1);
+function getExtName(fileName) {
+    return fileName.substr(fileName.lastIndexOf('.') + 1);
 }
+
+/**
+ * 重复指定字符串一定次数
+ * @param {*} s 要重复的字符串
+ * @param {*} n 重复的次数
+ * @returns 重复了n次的字符串
+ */
+function strRepeat(s, n) {
+    let _reS = ''
+    for (var i = 0; i < n; i++) { _reS += s }
+    return _reS;
+}
+
 /**
  * 排除文件后缀名
  * @param {*} fileName 文件名
  * @returns 
  */
-function excludeExtName(fileName){
-    return fileName.substr(0,fileName.lastIndexOf('.'));
+function excludeExtName(fileName) {
+    return fileName.substr(0, fileName.lastIndexOf('.'));
 }
 
 /**
@@ -136,59 +151,58 @@ function excludeExtName(fileName){
  * @param {*} promise 
  * @returns Promise resolve[err,val]
  */
-function handel(promise){
-    return new Promise((resolve,reject)=>{
-        promise.then((val)=>{
-            resolve([null,val])
-        }).catch((err)=>{
-            resolve([err,null])
+function handel(promise) {
+    return new Promise((resolve, reject) => {
+        promise.then((val) => {
+            resolve([null, val])
+        }).catch((err) => {
+            resolve([err, null])
         })
     })
 }
 
 // 自动加载js
-function autoLoad(targetPath,baseExportObj,maxlevel,excludePaths,passExts){
-    let files = loadFile(targetPath,'',maxlevel)
-    files = excludePath(files,targetPath,excludePaths,passExts)
-    // console.log(files);
-    let exportObj = autoRequire(files,baseExportObj,targetPath);
+function autoLoad(targetPath, baseExportObj, maxlevel, excludePaths, passExts) {
+    let files = loadFile(targetPath, '', maxlevel)
+    files = excludePath(files, targetPath, excludePaths, passExts)
+        // console.log(files);
+    let exportObj = autoRequire(files, baseExportObj, targetPath);
     // console.log(obj);
     return exportObj;
 }
 // 自动加载文件目录
-function autoRequire(fileArr,resultObj,targetPath){
-    resultObj = resultObj||{};
+function autoRequire(fileArr, resultObj, targetPath) {
+    resultObj = resultObj || {};
     for (const file of fileArr) {
-        if(file.isDirectory)
-        {
-            autoRequire(file.children,resultObj,targetPath)
-        }else{
-            let requireObj = require(path.join(targetPath,file.path))
-            if(requireObj){
+        if (file.isDirectory) {
+            autoRequire(file.children, resultObj, targetPath)
+        } else {
+            let requireObj = require(path.join(targetPath, file.path))
+            if (requireObj) {
                 let key = excludeExtName(file.fileName);
                 let tmpObj = {};
                 // 如果返回的是函数的话则尝试自动执行,如果返回值还是没有的话则抛弃掉该插件
-                if(typeof requireObj == 'function'){
+                if (typeof requireObj == 'function') {
                     try {
                         let fnResult = requireObj();
-                        if(typeof fnResult == 'object'){ 
-                            if(fnResult.key)key = fnResult.key;
+                        if (typeof fnResult == 'object') {
+                            if (fnResult.key) key = fnResult.key;
                             tmpObj = fnResult;
-                        }else{
+                        } else {
                             console.error(`文件无法自动加载,文件路径: ${file.path}`);
                         }
                     } catch (error) {
                         throw error;
                     }
-                }else if(typeof requireObj == 'object'){
-                    if(requireObj[key])key = requireObj.key;
+                } else if (typeof requireObj == 'object') {
+                    if (requireObj[key]) key = requireObj.key;
                     tmpObj = requireObj;
                 }
                 // 如果当前key对应的对象没有值则初始化值
-                if(!resultObj[key]){resultObj[key] = {}}
-                resultObj[key] = Object.assign(resultObj[key],tmpObj);
+                if (!resultObj[key]) { resultObj[key] = {} }
+                resultObj[key] = Object.assign(resultObj[key], tmpObj);
             }
-            
+
         }
     }
     return resultObj;
@@ -199,8 +213,8 @@ function autoRequire(fileArr,resultObj,targetPath){
  * @param {String,Url} configPath 配置文件路径
  * @return Promise
  */
-function getConfig(configPath){
-    return new Promise((resolve,reject)=>{
+function getConfig(configPath) {
+    return new Promise((resolve, reject) => {
         try {
             //获取目录
             let config = require(configPath);
@@ -209,7 +223,7 @@ function getConfig(configPath){
         } catch (error) {
             reject(error)
         }
-        
+
     })
 }
 // autoLoad(__dirname,moduleExports,4,['index.js'],'js');
@@ -224,4 +238,5 @@ module.exports = {
     getExtName,
     excludeExtName,
     getConfig,
+    strRepeat
 };

@@ -1,14 +1,16 @@
 {
+    "port": 8898,
     "docsifyPath": "/boke",
-    "repositoryName": "doc",
-    "cloneUrl": "",
+    "docPath": "",
+    "repositoryName": "md-",
+    "cloneUrl": "git@github.com:kindring/md-.git",
     "header": "master",
     "excludeExtName": [
         ".git",
         "README.md"
     ],
     "homeTarget": "README.md",
-    "sidebarTarget": "\"./_sidebar.md\"",
+    "sidebarTarget": "./_sidebar.md",
     "isCreateTmpReadme": false,
     "tmpReadmeName": "M__README_MD.md",
     "maxChildLevel": 4,
