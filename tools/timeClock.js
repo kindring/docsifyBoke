@@ -3,7 +3,7 @@
  * @Autor: kindring
  * @Date: 2021-09-18 17:15:29
  * @LastEditors: kindring
- * @LastEditTime: 2021-09-25 18:05:50
+ * @LastEditTime: 2021-09-26 09:50:27
  * @LastDescript: 
  */
 
@@ -46,7 +46,7 @@
 // 日重复型闹钟 选择时分秒即可
 // 定时重复型闹钟 输入重复间隔,以秒为单位
 
-
+// 时钟数据
 let timeInteface = {
     repeatRule: {
         type: 'week', // week每周星期几 worker节假日 timeRepeat定时重复
@@ -62,10 +62,14 @@ let timeInteface = {
         echoTime: '5m', //闹钟回响时间 最大值 2h 最小值 1m
         echoNum: 0, //闹钟单次已经重复次数 程序生成 *
         echoMaxNum: 5, //闹钟单次重响次数 响5次就自行关闭闹钟
-        fn() {}
+        fn() {}, // 要执行的任务
     }
 
 }
+
+
+
+
 class Time {
     constructor() {
         this.timeTask = {}
