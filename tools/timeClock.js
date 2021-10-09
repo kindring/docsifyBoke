@@ -3,7 +3,7 @@
  * @Autor: kindring
  * @Date: 2021-09-18 17:15:29
  * @LastEditors: kindring
- * @LastEditTime: 2021-09-26 09:50:27
+ * @LastEditTime: 2021-10-09 17:57:07
  * @LastDescript: 
  */
 
@@ -56,25 +56,283 @@ let timeInteface = {
     intervalTime: '', // 定时重复闹钟间隔时间 50h15m30s重复一次
     repeatNum: 0, //闹钟已经执行次数  程序计数 *
     repeatMaxNum: 0, //闹钟的重复次数 默认0 无限循环执行 
+
     // 闹钟每次执行的任务
     task: {
         echo: false, //闹钟是否会自动重复执行任务,在一个比较短的时间内
-        echoTime: '5m', //闹钟回响时间 最大值 2h 最小值 1m
+        echoInterval: '5m', //闹钟回响时间间隔 最大值 2h 最小值 1m
         echoNum: 0, //闹钟单次已经重复次数 程序生成 *
         echoMaxNum: 5, //闹钟单次重响次数 响5次就自行关闭闹钟
         fn() {}, // 要执行的任务
     }
-
 }
 
 
+let testFn = function(params) {
+    console.log('闹钟响了');
+};
 
 
+// 定时类型 重复执行类型
+
+// 2d3h45m1s
+
+
+// 每次校准时间,将计时器校准到相对标准的时间
 class Time {
     constructor() {
         this.timeTask = {}
         this.timeId = 0
+        this.Interval = 1000; // 间隔时间100毫秒
+        this.nextInterval = 100; //下一次闹钟执行的时间
+        this.checkTime = '1h'; //间隔1小时内的闹钟每次都检查
+        this.tick();
+        this.clocks = []; //闹钟列表
+        this.comingClocks = []; //马上将会执行的任务id
+
     }
 
+    // 每一tick执行的操作
+    tick() {
+        setTimeout(() => {
+            let nowDate = Date.now()
+            nowDate = this.Interval - (nowDate % this.Interval)
+            this.nextInterval = nowDate
+                // 查看是否需要执行任务
+            this._checkClock()
+            this.tick();
+        }, this.nextInterval);
+    }
 
+    // 新增闹钟
+    addClock(item) {
+        this.timeId++;
+        item.type = item.type || 'repeat'
+        switch (item.type) {
+            // 时间重复类型
+            case 'repeat':
+                this.clocks.push(
+                    _createTimeRepeatClock({
+                        ...item,
+                        id: this.timeId
+                    })
+                );
+                break;
+            default:
+                break;
+        }
+        return this.timeId
+    }
+    _createTimeRepeatClock(item) {
+        item.repeatTime = item.repeatTime || item.time || ''
+        let obj = {
+            type: 'timeRepeat',
+            repeatDate: this._parseTime(item.repeatTime),
+            nextRunDate: null, //下次执行时间
+            isRun: false, //是否已经执行
+            enable: true, //闹钟启用状态
+        }
+        return obj
+    }
+
+    // 检查将近的闹钟是否到达指定时间,到达指定时间进行
+    _checkClock() {
+        this.comingClocks.forEach((clock) => {
+            clock
+        })
+    }
+
+    /**
+     * 从文本中获取解析字符串
+     * @param {*} str 
+     * @returns 
+     */
+    _parseTime(str) {
+        let obj = {}
+        let regNum = /\d|[零一二两三四五六七八九]/,
+            regDay = /d|dd|天/,
+            regHour = /h|hh|时|小时/,
+            regMinute = /m|mm|分|分钟/,
+            regSecond = /s|ss|秒/,
+            regMillisecond = /ms|毫秒/,
+            regColon = /\:/
+
+        let tmpNum = ''
+        let tmpStr = ''
+        let ColonStr = ''
+        for (var s of str) {
+            // console.log(s);
+            if (regNum.test(s)) {
+                // 只能匹配前面结束的,无法把字符全部处理
+                if (tmpStr) {
+                    // console.log('数字:' + tmpNum);
+                    if (regMillisecond.test(tmpStr)) {
+                        obj['ms'] = tmpNum
+                    } else if (regDay.test(tmpStr)) {
+                        obj['day'] = tmpNum
+                    } else if (regHour.test(tmpStr)) {
+                        obj['hour'] = tmpNum
+                    } else if (regMinute.test(tmpStr)) {
+                        obj['minute'] = tmpNum
+                    } else if (regSecond.test(tmpStr)) {
+                        obj['second'] = tmpNum
+                    } else if (regColon.test(tmpStr)) {
+                        ColonStr += ColonStr ? `:${tmpNum}` : tmpNum
+                    }
+                    tmpNum = s
+                    tmpStr = ''
+                } else {
+                    tmpNum += `${s}`
+                }
+            } else {
+                tmpStr += s
+            }
+        }
+        if (tmpNum && !tmpStr) {
+            ColonStr += ColonStr ? `:${tmpNum}` : tmpNum
+        }
+        // 处理最后的连续字符
+        if (regMillisecond.test(tmpStr)) {
+            obj['ms'] = tmpNum
+        } else if (regDay.test(tmpStr)) {
+            obj['day'] = tmpNum
+        } else if (regHour.test(tmpStr)) {
+            obj['hour'] = tmpNum
+        } else if (regMinute.test(tmpStr)) {
+            obj['minute'] = tmpNum
+        } else if (regSecond.test(tmpStr)) {
+            obj['second'] = tmpNum
+        } else if (regHour.test(tmpStr)) {
+            obj['hour'] = tmpNum
+        } else if (regColon.test(tmpStr)) {
+            ColonStr += ColonStr ? `:${tmpNum}` : tmpNum
+        }
+
+        if (ColonStr) {
+            obj['ColonStr'] = ColonStr
+        }
+        // 数据合法化
+        return this.dateToNorm(obj)
+    }
+    _dateToNorm(obj) {
+        let keys = ['ms', 'second', 'minute', 'hour', 'day']
+        let carry = 0;
+        //从毫秒开始计算
+        if (obj['ms']) {
+            carry = Math.floor(obj['ms'] / 1000)
+            obj['ms'] = obj['ms'] % 1000
+        } else {
+            obj['ms'] = 0
+        }
+
+        // 计算秒
+        if (obj['second']) {
+            obj['second'] = (obj['second'] - 0) + carry
+            carry = Math.floor(obj['second'] / 60)
+            obj['second'] = (obj['second'] % 60)
+        } else {
+            obj['second'] = 0 + carry
+            carry = 0
+        }
+
+        // 计算分
+        if (obj['minute']) {
+            obj['minute'] = (obj['minute'] - 0) + carry
+            carry = Math.floor(obj['minute'] / 60)
+            obj['minute'] = (obj['minute'] % 60)
+        } else {
+            obj['minute'] = 0 + carry
+            carry = 0
+        }
+
+        // 计算小时
+        if (obj['hour']) {
+            obj['hour'] = (obj['hour'] - 0) + carry
+            carry = Math.floor(obj['hour'] / 24)
+            obj['hour'] = (obj['hour'] % 24)
+        } else {
+            obj['hour'] = 0 + carry
+            carry = 0
+        }
+        // 计算天
+        if (obj['day']) {
+            obj['day'] = obj['day'] - 0 + carry
+        } else {
+            obj['day'] = 0 + carry
+            carry = 0
+        }
+        return obj
+    }
 }
+
+let t = new Time();
+
+t.addClock({
+    type: 'repeat', //重复类型 天重复 
+    repeatTime: '1分钟', //重复时间
+    fn: testFn
+})
+
+t.addClock({
+    repeatTime: '10秒', //重复时间
+    fn: () => {
+        console.log('10秒自动执行任务')
+    }
+})
+
+
+
+// console.log(_parseTime('2天3h45分25秒'));
+// console.log(_parseTime('2d3小时45m'));
+// console.log(_parseTime('02天03小时45分15秒300毫秒'));
+// console.log(_parseTime('02天03小时45分15'));
+// console.log(_parseTime('5天79小时'));
+// console.log(_parseTime('79小时65分'));
+// console.log(_parseTime('130分钟2000毫秒'));
+// console.log(_parseTime('1130毫秒'));
+// console.log(_parseTime('130ms'));
+
+
+
+
+
+
+
+
+
+
+//`2天3h45分15秒`
+
+`   
+    3.20 500
+    3.21 1830
+    3.22 50
+    4.15 1158
+    5.15 1470
+    6.15 1486
+    7.15 1470
+    8.15 1523
+    9.15 1598
+
+daily: 30
+    5 morning
+    15 noon
+    15 night
+    10 snack
+month: 1 month
+    400 rent
+    200 water and electricty
+    130 china telecom
+    40 china unicom
+    50 network
+    100 public transport
+    500 week pay
+    1000 jingdong repayment
+    1450 huabei repayment
+
+oneMonth: 5220
+
+huabei: 2000 + 3150
+675+740 1415
+baitiao: 1150
+`
