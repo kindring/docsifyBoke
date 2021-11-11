@@ -1,13 +1,12 @@
 /*
  * @Author: your name
  * @Date: 2021-08-25 17:41:05
- * @LastEditTime: 2021-09-08 18:03:10
+ * @LastEditTime: 2021-11-11 17:04:01
  * @LastEditors: kindring
- * @Description: In User Settings Edit
+ * @Description: 博客控制温度
  * @FilePath: \docsifyBoke\controller\boke\index.js
  */
 const boke = require('./boke');
-const
 
 /**
  * 获取配置
@@ -34,6 +33,11 @@ function setConfig(key, val) {
 
 // 重启服务
 function restartDocsify() {
+    // 使用
+}
+
+// 启动docsify服务器
+function startDocsify() {
 
 }
 
