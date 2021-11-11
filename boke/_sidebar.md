@@ -4,6 +4,8 @@
    * [通用css](md-\css\通用css.md)
 * **electron**
    * [vue-electron](md-\electron\vue-electron.md)
+* **excel**
+   * [快速导出](md-\excel\快速导出.md)
 * **express**
    * [小技巧](md-\express\小技巧.md)
 * **flutter**
@@ -14,7 +16,9 @@
    * [如何控制](md-\innfos机械臂\如何控制.md)
    * [视觉抓取技术方案](md-\innfos机械臂\视觉抓取技术方案.md)
 * **js**
+  * **dom操作**
    * [dom相关记录](md-\js\dom相关记录.md)
+  * **jsStore**
    * [任务执行](md-\js\任务执行.md)
    * [合并数组中的key值](md-\js\合并数组中的key值.md)
    * [封裝一個無用task](md-\js\封裝一個無用task.md)
@@ -26,6 +30,7 @@
    * [koa使用技巧](md-\koa\koa使用技巧.md)
    * [README](md-\koa\README.md)
 * **linux**
+   * [开机挂载磁盘](md-\linux\开机挂载磁盘.md)
    * [开机自启相关](md-\linux\开机自启相关.md)
 * **mysql**
    * [语法](md-\mysql\语法.md)
@@ -35,6 +40,8 @@
    * [python基础](md-\python相关\python基础.md)
   * **智障py机器人源码阅读**
       * [index](md-\python相关\智障py机器人源码阅读\index.md)
+* **TS**
+   * [ts初学](md-\TS\ts初学.md)
 * **vue**
    * [vue3_Ant框架](md-\vue\vue3_Ant框架.md)
    * [vue3学习](md-\vue\vue3学习.md)

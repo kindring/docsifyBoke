@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-08-25 17:41:05
- * @LastEditTime: 2021-11-11 17:04:01
+ * @LastEditTime: 2021-11-11 18:10:03
  * @LastEditors: kindring
  * @Description: 博客控制温度
  * @FilePath: \docsifyBoke\controller\boke\index.js
@@ -31,17 +31,19 @@ function setConfig(key, val) {
     })
 }
 
-// 重启服务
-function restartDocsify() {
-    // 使用
-}
 
 // 启动docsify服务器
 function startDocsify() {
-
+    return new Promise(async(resolve, reject) => {
+        let config = boke.config.getConfig()
+        let res = await boke.startServer(config.docsifyPath, config.port);
+        resolve(res);
+    })
 }
 
 
 module.exports = {
-    config
+    config,
+    setConfig,
+    startDocsify
 }

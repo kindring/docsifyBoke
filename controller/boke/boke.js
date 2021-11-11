@@ -1,7 +1,7 @@
 /*
  * @Author: kindring
  * @Date: 2021-08-25 14:18:54
- * @LastEditTime: 2021-11-11 17:06:17
+ * @LastEditTime: 2021-11-11 18:18:22
  * @LastEditors: kindring
  * @Description: 博客处理
  * @FilePath: \docsifyBoke\controller\boke.js
@@ -20,17 +20,19 @@ const { error } = require('console');
 const { handel, getConfig, loadFile, excludePath, excludeExtName, strRepeat } = loadTools;
 
 const bokeConfigController = new Config();
-let bokeConfig = null;
+let _bokeConfig = null;
 let isLoaded = false;
+let docsifyExec = null;
 bokeConfigController.onloaded = function() {
     isLoaded = true;
-    bokeConfig = bokeConfigController.getConfig();
+    _bokeConfig = bokeConfigController.getConfig();
     startServer(bokeConfig);
 }
 
 // 封装任务
 async function startServer(bokeConfig) {
-    // 克隆任务
+    bokeConfig = bokeConfig || _bokeConfig
+        // 克隆任务
     let [gitErr, gitCloneStd] = await loadTools.handel(gitClone(bokeConfig))
     let [gitPullErr, gitPullStr] = await loadTools.handel(gitPull(bokeConfig))
     if (gitErr) { throw gitErr; }
@@ -43,6 +45,7 @@ async function startServer(bokeConfig) {
 
 // 克隆仓库
 function gitClone(bokeConfig) {
+    bokeConfig = bokeConfig || _bokeConfig
     return new Promise((resolve, reject) => {
         console.log(bokeConfig)
         console.log('----')
@@ -66,8 +69,9 @@ function gitClone(bokeConfig) {
 
 // 拉取最新倉庫
 function gitPull(bokeConfig) {
+    bokeConfig = bokeConfig || _bokeConfig
     return new Promise((resolve, reject) => {
-        // console.log(bokeConfig)
+        console.log(bokeConfig)
         console.log('--拉取仓库新内容--')
         let docPath = path.join(bokeConfig.rootPath, bokeConfig.repositoryName)
         console.log(docPath)
@@ -89,6 +93,10 @@ function gitPull(bokeConfig) {
 // 启动服务
 function startDocsify(rootPath, port) {
     return new Promise((resolve, reject) => {
+        console.log(`启动boke -- port:${port}`);
+        if (docsifyExec) {
+            return resolve({ port: docsifyPort })
+        }
         exec(`yarn docsify start ${rootPath} --port ${port}`, (err, stdout, stderr) => {
             if (err) {
                 console.log(err)
@@ -98,10 +106,15 @@ function startDocsify(rootPath, port) {
             console.log(`stdout`)
             console.log(`stderr`)
             console.log(stderr)
-            resolve(stderr)
         });
+        docsifyExec = exec;
+        docsifyPort = port;
+        resolve({
+            port,
+        })
     })
 }
+
 
 // 生成侧边栏
 async function updateSideBar(bokeConfig) {
