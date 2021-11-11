@@ -1,7 +1,7 @@
 /*
  * @Author: kindring
  * @Date: 2021-08-25 14:18:54
- * @LastEditTime: 2021-09-08 15:51:14
+ * @LastEditTime: 2021-11-11 17:06:17
  * @LastEditors: kindring
  * @Description: 博客处理
  * @FilePath: \docsifyBoke\controller\boke.js
@@ -102,6 +102,7 @@ function startDocsify(rootPath, port) {
         });
     })
 }
+
 // 生成侧边栏
 async function updateSideBar(bokeConfig) {
 

@@ -3,7 +3,7 @@
  * @Autor: kindring
  * @Date: 2021-09-18 17:15:29
  * @LastEditors: kindring
- * @LastEditTime: 2021-10-09 17:57:07
+ * @LastEditTime: 2021-11-11 15:15:03
  * @LastDescript: 
  */
 
@@ -267,18 +267,18 @@ class Time {
 
 let t = new Time();
 
-t.addClock({
-    type: 'repeat', //重复类型 天重复 
-    repeatTime: '1分钟', //重复时间
-    fn: testFn
-})
+// t.addClock({
+//     type: 'repeat', //重复类型 天重复 
+//     repeatTime: '1分钟', //重复时间
+//     fn: testFn
+// })
 
-t.addClock({
-    repeatTime: '10秒', //重复时间
-    fn: () => {
-        console.log('10秒自动执行任务')
-    }
-})
+// t.addClock({
+//     repeatTime: '10秒', //重复时间
+//     fn: () => {
+//         console.log('10秒自动执行任务')
+//     }
+// })
 
 
 
