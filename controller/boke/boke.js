@@ -1,7 +1,7 @@
 /*
  * @Author: kindring
  * @Date: 2021-08-25 14:18:54
- * @LastEditTime: 2021-11-11 18:18:22
+ * @LastEditTime: 2021-11-12 18:14:36
  * @LastEditors: kindring
  * @Description: 博客处理
  * @FilePath: \docsifyBoke\controller\boke.js
@@ -11,26 +11,28 @@ const fs = require('fs');
 const path = require('path')
 
 const loadTools = require('../../loadTool')
-
-// 导入加载配置文件
+const Docsify = require('./bokeServer')
+    // 导入加载配置文件
 const Config = require('./config')
+const tools = require('../../tools/index');
 
-const { error } = require('console');
+let info = tools.log('all', 'docsifyServer', 0);
+let errLog = tools.log('all', 'docsifyServer', 1);
 
 const { handel, getConfig, loadFile, excludePath, excludeExtName, strRepeat } = loadTools;
 
 const bokeConfigController = new Config();
 let _bokeConfig = null;
 let isLoaded = false;
-let docsifyExec = null;
+let docsifyServer = new Docsify(bokeConfig.rootPath, bokeConfig.port);
 bokeConfigController.onloaded = function() {
     isLoaded = true;
     _bokeConfig = bokeConfigController.getConfig();
-    startServer(bokeConfig);
+    _startServer(_bokeConfig);
 }
 
-// 封装任务
-async function startServer(bokeConfig) {
+// 加载文件后默认启动服务
+async function _startServer(bokeConfig) {
     bokeConfig = bokeConfig || _bokeConfig
         // 克隆任务
     let [gitErr, gitCloneStd] = await loadTools.handel(gitClone(bokeConfig))
@@ -39,11 +41,17 @@ async function startServer(bokeConfig) {
     console.log(gitPullErr);
     if (gitPullStr) { throw gitPullErr; }
     //  启动服务,非异步存储
-    startDocsify(bokeConfig.rootPath, bokeConfig.port);
+    // 启动服务
+    docsifyServer.run();
+    // 更新侧边栏文件
     updateSideBar(bokeConfig)
 }
 
-// 克隆仓库
+/**
+ * 克隆指定仓库
+ * @param {*} bokeConfig 
+ * @returns 
+ */
 function gitClone(bokeConfig) {
     bokeConfig = bokeConfig || _bokeConfig
     return new Promise((resolve, reject) => {
@@ -67,7 +75,11 @@ function gitClone(bokeConfig) {
     })
 }
 
-// 拉取最新倉庫
+/**
+ * 更新仓库
+ * @param {*} bokeConfig 配置数据
+ * @returns 
+ */
 function gitPull(bokeConfig) {
     bokeConfig = bokeConfig || _bokeConfig
     return new Promise((resolve, reject) => {
@@ -90,52 +102,59 @@ function gitPull(bokeConfig) {
     })
 }
 
-// 启动服务
-function startDocsify(rootPath, port) {
+/**
+ * 启动docsify服务
+ * @returns 
+ */
+function startDocsify() {
     return new Promise((resolve, reject) => {
-        console.log(`启动boke -- port:${port}`);
-        if (docsifyExec) {
-            return resolve({ port: docsifyPort })
-        }
-        exec(`yarn docsify start ${rootPath} --port ${port}`, (err, stdout, stderr) => {
+        docsifyServer.run((err) => {
             if (err) {
-                console.log(err)
-                return reject(err)
+                reject(err);
+                return errLog(`启动失败${err.message}`);
             }
-            console.log(stdout)
-            console.log(`stdout`)
-            console.log(`stderr`)
-            console.log(stderr)
+            resolve(true);
         });
-        docsifyExec = exec;
-        docsifyPort = port;
-        resolve({
-            port,
-        })
+    })
+}
+
+/**
+ * 停止docsify服务
+ * @returns 
+ */
+function stopDocsify() {
+    return new Promise((resolve, reject) => {
+        docsifyServer.stop();
+        resolve();
+    })
+}
+
+/**
+ * 重启docsify服务
+ * @returns 
+ */
+function restartDocsify() {
+    return new Promise(resolve => {
+        docsifyServer.restart();
+        resolve();
     })
 }
 
 
 // 生成侧边栏
 async function updateSideBar(bokeConfig) {
-
+    bokeConfig = bokeConfig || _bokeConfig;
     // 获取目录下的所有文件
     let dirs = loadFile(bokeConfig.docPath, '', bokeConfig.maxChildLevel);
-
-    // console.log(dirs);
     // 排除目标文件
     dirs = excludePath(dirs, bokeConfig.docPath, bokeConfig.excludeExtName);
-    // console.log(dirs);
-
     // 过滤文件夹
     dirs = dirs.filter(val => val.isDirectory ? val.children.length > 0 : true);
-    console.table(dirs);
-    let siderbarString = await createSidebarString(dirs, bokeConfig.repositoryName, bokeConfig.docPath, bokeConfig.isCreateTmpReadme);
+    let siderbarString = await _createSidebarString(dirs, bokeConfig.repositoryName, bokeConfig.docPath, bokeConfig.isCreateTmpReadme);
     let sidebarTarget = path.join(bokeConfig.rootPath, bokeConfig.sidebarTarget)
     let sideBar_md_exist = await fs.existsSync(sidebarTarget);
-    console.log(sidebarTarget);
-    let [writeError, isWriteOk] = await handel(writePromise(sidebarTarget, siderbarString))
-    if (writeError) { return deadlyErrorHandel(writeError, '写入文件失败') }
+    let [writeError, isWriteOk] = await handel(_writePromise(sidebarTarget, siderbarString))
+    if (writeError) { return _deadlyErrorHandel(writeError, '写入文件失败') }
     console.log('侧边栏写入成功 1');
 }
 
@@ -148,7 +167,7 @@ async function updateSideBar(bokeConfig) {
  * @param {*} level 
  * @returns 
  */
-async function createSidebarString(arrs, basePath, docPath, isCreateTmpReadme = false, level = 0) {
+async function _createSidebarString(arrs, basePath, docPath, isCreateTmpReadme = false, level = 0) {
     // console.log('----------------')
     // console.log(arrs)
     // console.log('----------------')
@@ -158,7 +177,7 @@ async function createSidebarString(arrs, basePath, docPath, isCreateTmpReadme = 
     for (const item of arrs) {
         let line = ''
         if (item.isDirectory) {
-            let childrenStr = await createSidebarString(item.children, basePath, docPath, isCreateTmpReadme, level + 1);
+            let childrenStr = await _createSidebarString(item.children, basePath, docPath, isCreateTmpReadme, level + 1);
             // 判断当前路径下是否有README文件存在
             let menuReadmePath = path.join(docPath, item.path, 'README.md');
             let menuReadme_md_exist = await fs.existsSync(menuReadmePath);
@@ -185,7 +204,7 @@ async function createSidebarString(arrs, basePath, docPath, isCreateTmpReadme = 
  * @param {String,Buffer} data 要写入的文件路径
  * @returns Promise
  */
-function writePromise(filePath, data, options) {
+function _writePromise(filePath, data, options) {
     return new Promise((resolve, reject) => {
         fs.writeFile(filePath, data, options, function(err) {
             err ? reject([err]) : resolve([null, true])
@@ -198,15 +217,13 @@ function writePromise(filePath, data, options) {
  * @param {*} error 出现的错误 
  * @param {*} comment 错误的描述
  */
-function deadlyErrorHandel(error, comment) {
-    console.error(comment);
-    console.error(error.message);
+function _deadlyErrorHandel(error, comment) {
     //生成日志
+    errLog(`致命错误${error.message}${comment}`)
 }
 
 
 module.exports = {
-    startServer,
     config: bokeConfigController,
     gitConfig: bokeConfigController.getConfig
 }
