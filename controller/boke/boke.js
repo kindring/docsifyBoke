@@ -1,7 +1,7 @@
 /*
  * @Author: kindring
  * @Date: 2021-08-25 14:18:54
- * @LastEditTime: 2021-11-12 18:14:36
+ * @LastEditTime: 2021-12-23 15:05:41
  * @LastEditors: kindring
  * @Description: 博客处理
  * @FilePath: \docsifyBoke\controller\boke.js
@@ -24,10 +24,11 @@ const { handel, getConfig, loadFile, excludePath, excludeExtName, strRepeat } = 
 const bokeConfigController = new Config();
 let _bokeConfig = null;
 let isLoaded = false;
-let docsifyServer = new Docsify(bokeConfig.rootPath, bokeConfig.port);
+let docsifyServer = null;
 bokeConfigController.onloaded = function() {
     isLoaded = true;
     _bokeConfig = bokeConfigController.getConfig();
+    docsifyServer = new Docsify(_bokeConfig.rootPath, _bokeConfig.port);
     _startServer(_bokeConfig);
 }
 

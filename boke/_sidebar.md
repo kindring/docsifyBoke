@@ -12,6 +12,8 @@
    * [初学](md-\flutter\初学.md)
 * **git**
    * [git分支玩法](md-\git\git分支玩法.md)
+* **img**
+   * [图片加载](md-\img\图片加载.md)
 * **innfos机械臂**
    * [如何控制](md-\innfos机械臂\如何控制.md)
    * [视觉抓取技术方案](md-\innfos机械臂\视觉抓取技术方案.md)
@@ -19,6 +21,7 @@
   * **dom操作**
    * [dom相关记录](md-\js\dom相关记录.md)
   * **jsStore**
+  * **port**
    * [任务执行](md-\js\任务执行.md)
    * [合并数组中的key值](md-\js\合并数组中的key值.md)
    * [封裝一個無用task](md-\js\封裝一個無用task.md)
@@ -30,11 +33,13 @@
    * [koa使用技巧](md-\koa\koa使用技巧.md)
    * [README](md-\koa\README.md)
 * **linux**
+   * [ubuntu上好用的远程](md-\linux\ubuntu上好用的远程.md)
    * [开机挂载磁盘](md-\linux\开机挂载磁盘.md)
    * [开机自启相关](md-\linux\开机自启相关.md)
 * **mysql**
    * [语法](md-\mysql\语法.md)
 * **php**
+   * [json编码](md-\php\json编码.md)
    * [phpthink](md-\php\phpthink.md)
 * **python相关**
    * [python基础](md-\python相关\python基础.md)
@@ -43,6 +48,7 @@
 * **TS**
    * [ts初学](md-\TS\ts初学.md)
 * **vue**
+   * [vue2学习](md-\vue\vue2学习.md)
    * [vue3_Ant框架](md-\vue\vue3_Ant框架.md)
    * [vue3学习](md-\vue\vue3学习.md)
    * [vuex_使用](md-\vue\vuex_使用.md)
@@ -55,6 +61,7 @@
    * [README](md-\博客搭建\README.md)
    * [搭建docsify](md-\博客搭建\搭建docsify.md)
 * **奇思妙想**
+   * [奇奇怪怪的清单](md-\奇思妙想\奇奇怪怪的清单.md)
    * [如何编写代码](md-\奇思妙想\如何编写代码.md)
 * **测试**
    * [markdown技巧](md-\测试\markdown技巧.md)

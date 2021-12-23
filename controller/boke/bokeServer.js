@@ -3,10 +3,11 @@
  * @Autor: kindring
  * @Date: 2021-11-12 14:44:22
  * @LastEditors: kindring
- * @LastEditTime: 2021-11-12 16:27:48
+ * @LastEditTime: 2021-12-23 15:14:03
  * @LastDescript: 
  */
 const { spawn, exec } = require('child_process');
+const { stderr } = require('process');
 const tools = require('../../tools/index');
 let info = tools.log('all', 'docsifyServer', 0);
 let errLog = tools.log('all', 'docsifyServer', 1);
@@ -14,7 +15,7 @@ let errLog = tools.log('all', 'docsifyServer', 1);
 class Docsify {
     // 指定端口
     // 指定路径
-    constructor(port, rootPath) {
+    constructor(rootPath, port) {
         this.port = port;
         this.rootPath = rootPath;
         this.exec;
@@ -75,6 +76,10 @@ class Docsify {
             // console.log('进程主动退出');
             processExit('exit', data);
         });
+        swap.stderr.on('data', data => {
+            console.log(data.toString());
+            console.error('出现错误');
+        })
         swap.stdout.on('data', data => {
             // console.log('进程输出');
             let str = data.toString();
